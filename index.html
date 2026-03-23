@@ -53,6 +53,7 @@ body{background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6}
 .tab-btn:hover{border-color:var(--accent);color:var(--text)}
 .tab-btn.act-nino{border-color:var(--nino);color:var(--nino);background:rgba(255,92,46,0.08)}
 .tab-btn.act-nina{border-color:var(--nina);color:var(--nina);background:rgba(30,180,232,0.08)}
+.tab-btn.act-ambas{border-color:var(--accent2);color:var(--accent2);background:rgba(126,232,200,0.08)}
 
 /* MAIN PANEL */
 .main-panel{display:grid;grid-template-columns:1fr 320px;gap:24px;align-items:start}
@@ -178,8 +179,9 @@ footer{text-align:center;padding:36px;color:var(--text-dim);font-size:.78rem;
   <p class="section-intro">Cambia entre El Niño y La Niña. Observa cómo se modifican el Pacífico, los alisios, la surgencia, Humboldt, la convección y el transporte de humedad.</p>
 
   <div class="tabs">
-    <button class="tab-btn act-nino" onclick="setCond('nino',this)">▲ El Niño — Fase Cálida</button>
+    <button class="tab-btn" onclick="setCond('nino',this)">▲ El Niño — Fase Cálida</button>
     <button class="tab-btn" onclick="setCond('nina',this)">▼ La Niña — Fase Fría</button>
+    <button class="tab-btn" onclick="setCond('ambas',this)">◉ Ver ambas presentaciones</button>
   </div>
 
   <!-- PPTX PANELS -->
@@ -429,10 +431,15 @@ const data = {
 
 function setCond(c, btn) {
   document.querySelectorAll('.tab-btn').forEach(b => b.className='tab-btn');
-  btn.classList.add('act-'+c);
-  // Show correct PPTX panel
-  document.getElementById('pptx-nino').style.display = c==='nino' ? 'block' : 'none';
-  document.getElementById('pptx-nina').style.display = c==='nina' ? 'block' : 'none';
+  if (btn) {
+    if (c === 'nino') btn.classList.add('act-nino');
+    else if (c === 'nina') btn.classList.add('act-nina');
+    else btn.classList.add('act-ambas');
+  }
+
+  // Show one or both presentation panels
+  document.getElementById('pptx-nino').style.display = (c === 'nino' || c === 'ambas') ? 'block' : 'none';
+  document.getElementById('pptx-nina').style.display = (c === 'nina' || c === 'ambas') ? 'block' : 'none';
 }
 
 function insertPPTX(input, boxId) {
@@ -479,8 +486,8 @@ function insertPPTX(input, boxId) {
   }
 }
 
-// Init
-setCond('nino', document.querySelector('.tab-btn'));
+// Init with both slide decks visible
+setCond('ambas', document.querySelectorAll('.tab-btn')[2]);
 
 // File helpers
 function triggerFile(id) { document.getElementById(id).click(); }
